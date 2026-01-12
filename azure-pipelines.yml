@@ -4,29 +4,27 @@ trigger:
 pool:
   name: selfhosted-172
 
-
-
 steps:
 - checkout: self
   persistCredentials: true
   clean: true
 
 - script: |
-    echo "Configuring git user"
-    git config user.email "azuredevops@apmosys.com"
+    set -e
+
+    echo "Amit Jha"
+    git config user.email "cpwithjava@gmail.com"
     git config user.name "Azure DevOps Pipeline"
 
-    echo "Fetching latest branches"
+    echo "Fetching all branches"
     git fetch origin
 
-    echo "Checking out main branch"
+    echo "Resetting local main to remote main"
     git checkout main
-
-    echo "Pulling latest main"
-    git pull origin main
+    git reset --hard origin/main
 
     echo "Merging dev into main"
-    git merge origin/dev --no-edit
+    git merge origin/dev --no-edit --allow-unrelated-histories
 
     echo "Pushing changes to main"
     git push origin main
