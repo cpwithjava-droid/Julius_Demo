@@ -1,0 +1,31 @@
+trigger:
+- dev
+
+pool:
+  name: selfhosted-172
+
+steps:
+- checkout: self
+  persistCredentials: true
+  clean: true
+
+- script: |
+    set -e
+
+    echo "Amit Jha"
+    git config user.email "cpwithjava@gmail.com"
+    git config user.name "Azure DevOps Pipeline "
+
+    echo "Fetching all branches"
+    git fetch origin
+
+    echo "Resetting local main to remote main"
+    git checkout main
+    git reset --hard origin/main
+
+    echo "Merging dev into main"
+    git merge origin/dev --no-edit --allow-unrelated-histories
+
+    echo "Pushing changes to main"
+    git push origin main
+  displayName: "Auto merge dev into main"
