@@ -14,7 +14,7 @@ steps:
 
     echo "Amit Jha"
     git config user.email "cpwithjava@gmail.com"
-    git config user.name "Azure DevOps Pipeline "
+    git config user.name "Azure DevOps Pipeline"
 
     echo "Fetching all branches"
     git fetch origin
@@ -24,8 +24,12 @@ steps:
     git reset --hard origin/main
 
     echo "Merging dev into main"
-    git merge origin/dev --no-edit --allow-unrelated-histories
-
-    echo "Pushing changes to main"
-    git push origin main
+    if git merge origin/dev --no-edit --allow-unrelated-histories; then
+      echo "Merge successful, pushing changes"
+      git push origin main
+    else
+      echo "Merge conflict detected, aborting merge"
+      git merge --abort
+      exit 1  # Fail or succeed depending on your preference
+    fi
   displayName: "Auto merge dev into main"
