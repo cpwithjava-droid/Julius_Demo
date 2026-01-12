@@ -26,10 +26,22 @@ steps:
     echo "Merging dev into main"
     if git merge origin/dev --no-edit --allow-unrelated-histories; then
       echo "Merge successful, pushing changes"
-      git push origin main
     else
-      echo "Merge conflict detected, aborting merge"
-      git merge --abort
-      exit 1  # Fail or succeed depending on your preference
+      echo "Merge conflict detected, keeping main's version of ignored files"
+
+      # Take main's version of files you want to ignore
+      git checkout --ours azure-pipelines.yml
+      git checkout --ours check.txt
+
+      # Stage the ignored files
+      git add azure-pipelines.yml check.txt
+
+      # Commit the merge
+      git commit -m "Auto merge dev into main, preserving main's pipeline and check.txt"
+
+      echo "Merge conflicts resolved automatically"
     fi
-  displayName: "Auto merge dev into main"
+
+    echo "Pushing merged changes to main"
+    git push origin main
+  displayName: "Auto merge dev into main (ignore certain files)"
