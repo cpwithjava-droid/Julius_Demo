@@ -1,0 +1,35 @@
+trigger:
+  branches:
+    include:
+      - dev
+
+pool:
+  name: selfhosted-172
+
+
+
+steps:
+- checkout: self
+  persistCredentials: true
+  clean: true
+
+- script: |
+    echo "Configuring git user"
+    git config user.email "azuredevops@apmosys.com"
+    git config user.name "Azure DevOps Pipeline"
+
+    echo "Fetching latest branches"
+    git fetch origin
+
+    echo "Checking out main branch"
+    git checkout main
+
+    echo "Pulling latest main"
+    git pull origin main
+
+    echo "Merging dev into main"
+    git merge origin/dev --no-edit
+
+    echo "Pushing changes to main"
+    git push origin main
+  displayName: "Auto merge dev into main"
